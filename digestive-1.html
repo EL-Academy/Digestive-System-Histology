@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digestive System Histology Quiz</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background:#f7f7f7;
+        margin:0;
+        padding:20px;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        text-align:center;
+    }
+    h1 {
+        text-align:center;
+        color:#1e3a8a;
+        font-size:24px;
+        margin:10px 0 5px 0;
+    }
+    .timer-box {
+        background:#e8f0fe;
+        border-left:4px solid #1e3a8a;
+        padding:10px;
+        margin-top:10px;
+        text-align:center;
+        font-weight:bold;
+        border-radius:6px;
+        font-size:14px;
+    }
+    .question-box {
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        margin-top:20px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        text-align:left;
+    }
+    #question-text {
+        color:#1e3a8a;
+        font-size:18px;
+        margin-bottom:15px;
+    }
+    button {
+        width:100%;
+        margin:6px 0;
+        padding:12px;
+        font-size:16px;
+        border-radius:6px;
+        border:1px solid #ccc;
+        cursor:pointer;
+        background:white;
+        text-align:left;
+        box-sizing:border-box;
+    }
+    .correct {
+        background:#d1fad1 !important;
+        border-color:#22c55e !important;
+    }
+    .wrong {
+        background:#ffe1e1 !important;
+        border-color:#ef4444 !important;
+    }
+    .nav-btns {
+        display:flex;
+        gap:10px;
+        margin-top:20px;
+    }
+    .nav-btns button {
+        flex:1;
+        text-align:center;
+    }
+    #results-box {
+        display:none;
+        background:rgb(53, 219, 44);
+        border-radius:20px;
+        padding:20px;
+        margin-top:20px;
+        box-shadow:0 2px 5px rgba(0,0,0,0.1);
+        text-align:center;
+    }
+    #explanation {
+        margin-top:10px;
+        color:#444;
+        font-size:14px;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+        body { padding:10px; }
+        h1 { font-size:20px; }
+        .question-box { padding:15px; }
+        button { font-size:15px; padding:10px; }
+        .timer-box { font-size:13px; }
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Digestive System Histology Quiz</h1>
+
+    <div class="timer-box">
+        Total Exam Time (Auto): <span id="timer">--:--</span>
+    </div>
+
+    <div id="quiz-box" class="question-box">
+        <h2 id="question-text">Loading...</h2>
+        <div id="options"></div>
+        <div id="explanation"></div>
+    </div>
+
+    <div class="nav-btns">
+        <button id="prev" disabled>Previous</button>
+        <button id="finish" style="background:#dc2626; color:white;">Finish</button>
+        <button id="next" disabled style="background:#1e3a8a; color:white;">Next</button>
+    </div>
+
+    <div id="results-box">
+        <h2>Quiz Complete</h2>
+        <p id="score"></p>
+        <p id="time-used"></p>
+        <button onclick="location.reload()">Restart</button>
+    </div>
+
+</div>
+
+<script>
+/* QUESTIONS */
+const questions = [
+  // --- PART 1: GI TRACT & ORAL CAVITY ---
+  {
+    "q": "Which of the following sequences correctly identifies the layers of the gastrointestinal tract wall from the lumen outward?",
+    "options": [
+      "Submucosa, Mucosa, Muscularis externa, Serosa",
+      "Mucosa, Submucosa, Muscularis externa, Serosa/Adventitia",
+      "Mucosa, Muscularis externa, Submucosa, Serosa",
+      "Muscularis externa, Mucosa, Submucosa, Serosa"
+    ],
+    "answer": "Mucosa, Submucosa, Muscularis externa, Serosa/Adventitia",
+    "explanation": "The standard organization of the GI tract consists of four distinct layers: the innermost Mucosa, followed by the Submucosa, then the Muscularis externa, and finally the outermost Serosa or Adventitia."
+  },
+  {
+    "q": "A 2-year-old child presents with chronic constipation and significant abdominal distension. A biopsy of a non-functional colonic segment reveals a complete absence of the submucosal (Meissner) and myenteric (Auerbach) plexuses. What is the most likely diagnosis?",
+    "options": [
+      "Celiac disease",
+      "Chagas disease",
+      "Hirschsprung disease",
+      "Diverticulosis"
+    ],
+    "answer": "Hirschsprung disease",
+    "explanation": "Hirschsprung disease is a congenital disorder characterized by the absence of the enteric nerve plexuses in a segment of the colon, leading to a lack of peristalsis and subsequent functional obstruction (megacolon)."
+  },
+  {
+    "q": "Which specific region of the oral cavity is lined with keratinized stratified squamous epithelium to withstand the friction of mastication?",
+    "options": [
+      "Soft palate and cheeks",
+      "Gingiva and hard palate",
+      "Floor of the mouth",
+      "Inner surface of the lips"
+    ],
+    "answer": "Gingiva and hard palate",
+    "explanation": "The gingiva (gums) and the hard palate are subjected to significant mechanical friction during chewing and are therefore protected by a keratinized stratified squamous epithelium."
+  },
+  {
+    "q": "A patient complaining of chronic 'heartburn' undergoes an endoscopy. The physician notes that the normally stratified squamous epithelium of the lower esophagus has been replaced by simple columnar epithelium. What is this clinical condition called?",
+    "options": [
+      "Reflux esophagitis",
+      "Barrett esophagus",
+      "Diverticulitis",
+      "Gingivitis"
+    ],
+    "answer": "Barrett esophagus",
+    "explanation": "Barrett esophagus is a metaplastic change where the stratified squamous epithelium of the esophagus changes to simple columnar epithelium due to chronic acid reflux (GERD)."
+  },
+  {
+    "q": "During a histology lab, a student observes a section of the esophagus and notices that the muscularis externa is composed of a mixture of both skeletal and smooth muscle. Which part of the esophagus is being viewed?",
+    "options": [
+      "Upper one-third",
+      "Middle one-third",
+      "Lower one-third",
+      "Esophagogastric junction"
+    ],
+    "answer": "Middle one-third",
+    "explanation": "The muscularis externa of the esophagus transitions from exclusively skeletal muscle in the upper third to a mixture in the middle third, and finally to exclusively smooth muscle in the lower third."
+  },
+  {
+    "q": "Which histological feature of the stomach's muscularis externa facilitates the 'churning' and mechanical breakdown of food into chyme?",
+    "options": [
+      "An inner circular layer only",
+      "An outer longitudinal layer only",
+      "Two layers: inner circular and outer longitudinal",
+      "Three layers: inner oblique, middle circular, and outer longitudinal"
+    ],
+    "answer": "Three layers: inner oblique, middle circular, and outer longitudinal",
+    "explanation": "Unlike the rest of the GI tract, the stomach has a third, innermost oblique layer of smooth muscle in its muscularis externa, which allows for complex churning movements."
+  },
+  {
+    "q": "Which type of lingual papillae is the most numerous, lacks taste buds, and provides a rough surface to facilitate the movement of food during chewing?",
+    "options": [
+      "Fungiform papillae",
+      "Foliate papillae",
+      "Filiform papillae",
+      "Vallate papillae"
+    ],
+    "answer": "Filiform papillae",
+    "explanation": "Filiform papillae are highly keratinized, cone-shaped projections that provide friction but do not contain taste buds."
+  },
+  {
+    "q": "What is the primary function of the serous secretions from the glands of von Ebner located near the vallate papillae?",
+    "options": [
+      "To secrete amylase for carbohydrate digestion",
+      "To provide a protective mucus barrier",
+      "To wash away food particles from taste buds to allow new stimuli processing",
+      "To release IgA for local immunity"
+    ],
+    "answer": "To wash away food particles from taste buds to allow new stimuli processing",
+    "explanation": "Von Ebner's glands are serous glands associated with vallate papillae; their secretions flush the grooves around the papillae to clear old food particles from taste buds."
+  },
+  {
+    "q": "A patient is diagnosed with a condition that causes the destruction of villi and malabsorption in the small intestine due to an immune reaction against gluten. This describes:",
+    "options": [
+      "Crohn's disease",
+      "Celiac disease",
+      "Diverticulosis",
+      "Periodontitis"
+    ],
+    "answer": "Celiac disease",
+    "explanation": "Celiac disease is an immune-mediated disorder where gluten ingestion leads to inflammation and destruction of the small intestinal villi, resulting in malabsorption."
+  },
+  {
+    "q": "The 'hardest component of the human body,' which is acellular and consists of 96% calcium hydroxyapatite, is:",
+    "options": [
+      "Dentin",
+      "Cementum",
+      "Alveolar bone",
+      "Enamel"
+    ],
+    "answer": "Enamel",
+    "explanation": "Enamel is the hardest substance in the body, composed almost entirely of mineral (calcium hydroxyapatite) and lacking collagen."
+  },
+  {
+    "q": "Which layer of the GI tract contains the submucosal (Meissner) plexus, which regulates local secretions and blood flow?",
+    "options": [
+      "Mucosa",
+      "Submucosa",
+      "Muscularis externa",
+      "Serosa"
+    ],
+    "answer": "Submucosa",
+    "explanation": "The submucosa contains the submucosal (Meissner) plexus, while the myenteric (Auerbach) plexus is located between the layers of the muscularis externa."
+  },
+  {
+    "q": "A 65-year-old patient with a history of chronic constipation presents with localized inflammation in the colon. Imaging shows small outpocketings of the mucosa through the muscularis. This condition is:",
+    "options": [
+      "Hirschsprung disease",
+      "Diverticulosis",
+      "Barrett esophagus",
+      "Gingivitis"
+    ],
+    "answer": "Diverticulosis",
+    "explanation": "Diverticulosis involves the herniation of the mucosa and submucosa through defects in the muscularis externa of the colon, often caused by high intraluminal pressure."
+  },
+  {
+    "q": "What component of the periodontium consists of fibrous connective tissue (Sharpey fibers) that binds the tooth cementum to the alveolar bone?",
+    "options": [
+      "Gingiva",
+      "Pulp",
+      "Periodontal ligament",
+      "Dentin"
+    ],
+    "answer": "Periodontal ligament",
+    "explanation": "The periodontal ligament is the fibrous tissue that anchors the tooth into the dental alveolus by connecting the cementum to the bone."
+  },
+  {
+    "q": "Which part of the small intestine is the primary region for chemical digestion and the majority of nutrient absorption?",
+    "options": [
+      "Duodenum",
+      "Jejunum",
+      "Ileum",
+      "Cecum"
+    ],
+    "answer": "Jejunum",
+    "explanation": "While digestion begins in the duodenum, the jejunum is the principal site for chemical digestion and the absorption of nutrients."
+  },
+  {
+    "q": "What is the primary immunological role of the Mucosa-Associated Lymphoid Tissue (MALT) found throughout the digestive tract?",
+    "options": [
+      "Secretes hydrochloric acid",
+      "Produces IgA to protect against pathogens",
+      "Regulates peristalsis",
+      "Facilitates the absorption of lipids"
+    ],
+    "answer": "Produces IgA to protect against pathogens",
+    "explanation": "MALT contains lymphoid cells and nodules that produce IgA, providing a vital defense against the large microbial population in the GI tract."
+  },
+
+  // --- PART 2: ASSOCIATED ORGANS (LIVER, PANCREAS, GLANDS) ---
+  {
+    "q": "A histology slide of a major salivary gland shows predominantly serous acini with a watery secretion and lacks mucous cells. Which gland is most likely represented?",
+    "options": [
+      "Submandibular gland",
+      "Sublingual gland",
+      "Parotid gland",
+      "Minor lingual gland"
+    ],
+    "answer": "Parotid gland",
+    "explanation": "The parotid gland is characterized by purely serous secretions, whereas the submandibular and sublingual glands are mixed (seromucous)."
+  },
+  {
+    "q": "Which cell type in the liver is responsible for the storage of Vitamin A and plays a central role in the development of hepatic fibrosis following chronic injury?",
+    "options": [
+      "Kupffer cells",
+      "Hepatocytes",
+      "Hepatic stellate cells (Ito cells)",
+      "Sinusoidal endothelial cells"
+    ],
+    "answer": "Hepatic stellate cells (Ito cells)",
+    "explanation": "Hepatic stellate cells are located in the space of Disse; they store Vitamin A in health but differentiate into myofibroblasts that produce excessive collagen during chronic injury."
+  },
+  {
+    "q": "A researcher is studying the exocrine function of the liver. Which structural model should they focus on, as it centers on the portal triad and emphasizes bile drainage?",
+    "options": [
+      "Classic hepatic lobule",
+      "Portal lobule",
+      "Hepatic acinus",
+      "Portal canal"
+    ],
+    "answer": "Portal lobule",
+    "explanation": "The portal lobule is a triangular model centered on a portal tract, highlighting the area from which bile drains into a single bile duct."
+  },
+  {
+    "q": "In the hepatic acinus model, which zone is the first to be affected by toxins entering the liver through the portal blood, but the last to suffer from ischemic necrosis?",
+    "options": [
+      "Zone 1 (Periportal)",
+      "Zone 2 (Intermediate)",
+      "Zone 3 (Pericentral)",
+      "The Central Vein"
+    ],
+    "answer": "Zone 1 (Periportal)",
+    "explanation": "Zone 1 is closest to the incoming blood supply (portal triad), receiving the most oxygen and nutrients, but it is also the first exposed to any blood-borne toxins."
+  },
+  {
+    "q": "A biopsy of the gallbladder reveals deep invaginations of the mucosa that extend through the muscularis externa. These structures, often sites of bile stasis and stone formation, are known as:",
+    "options": [
+      "Canals of Hering",
+      "Spaces of Disse",
+      "Rokitansky-Aschoff sinuses",
+      "Bile canaliculi"
+    ],
+    "answer": "Rokitansky-Aschoff sinuses",
+    "explanation": "Rokitansky-Aschoff sinuses (RAS) are mucosal hernias or invaginations into the muscularis common in chronic cholecystitis."
+  },
+  {
+    "q": "Which hormone, released by the duodenum in response to dietary fats, is the primary stimulus for gallbladder contraction and bile ejection?",
+    "options": [
+      "Secretin",
+      "Gastrin",
+      "Cholecystokinin (CCK)",
+      "Insulin"
+    ],
+    "answer": "Cholecystokinin (CCK)",
+    "explanation": "CCK is released by enteroendocrine cells in the small intestine and signals the gallbladder to contract."
+  },
+  {
+    "q": "The exocrine portion of the pancreas is composed of serous acini. What is the first part of the duct system that drains these acini?",
+    "options": [
+      "Intercalated duct",
+      "Intralobular duct",
+      "Interlobular duct",
+      "Main pancreatic duct"
+    ],
+    "answer": "Intercalated duct",
+    "explanation": "Each pancreatic acinus is drained by a short intercalated duct, which eventually merges into larger ductal systems."
+  },
+  {
+    "q": "A patient presents with persistent dry mouth (xerostomia). Histological examination of their salivary glands might show dysfunction in which structure responsible for the antimicrobial properties of saliva?",
+    "options": [
+      "Serous cells producing amylase",
+      "Cells producing lysozyme",
+      "Mucous cells producing mucin",
+      "Stellate cells producing Vitamin A"
+    ],
+    "answer": "Cells producing lysozyme",
+    "explanation": "Lysozyme is an antimicrobial component of saliva that helps protect the oral cavity."
+  },
+  {
+    "q": "During a pathology review, a student notes 'discontinuous endothelium with large fenestrations and a lack of a continuous basal lamina' in a liver section. This describes the:",
+    "options": [
+      "Portal vein",
+      "Hepatic artery",
+      "Hepatic sinusoids",
+      "Bile canaliculi"
+    ],
+    "answer": "Hepatic sinusoids",
+    "explanation": "Hepatic sinusoids are specialized, highly permeable capillaries that allow for rapid exchange between blood and hepatocytes."
+  },
+  {
+    "q": "The 'space of Disse' is a critical functional compartment in the liver located between which two structures?",
+    "options": [
+      "Adjacent hepatocytes",
+      "Hepatocytes and sinusoidal endothelium",
+      "The portal vein and hepatic artery",
+      "The central vein and the sinusoid"
+    ],
+    "answer": "Hepatocytes and sinusoidal endothelium",
+    "explanation": "The space of Disse (perisinusoidal space) is the narrow gap where hepatocytes extend microvilli for material exchange with the blood."
+  },
+  {
+    "q": "Which of the following describes a key histological difference between the gallbladder and the rest of the gastrointestinal tract?",
+    "options": [
+      "The gallbladder has a thicker submucosa",
+      "The gallbladder lacks a muscularis mucosae and submucosa",
+      "The gallbladder has three distinct layers of muscularis externa",
+      "The gallbladder is lined by stratified squamous epithelium"
+    ],
+    "answer": "The gallbladder lacks a muscularis mucosae and submucosa",
+    "explanation": "Unlike the standard GI tract, the gallbladder's wall bypasses these layers, consisting of mucosa, muscularis, and serosa/adventitia."
+  },
+  {
+    "q": "In the liver, bile flows in the opposite direction of blood flow. Which is the correct sequence of bile drainage starting from the hepatocytes?",
+    "options": [
+      "Bile duct → Canals of Hering → Bile canaliculi",
+      "Bile canaliculi → Canals of Hering → Bile ductules",
+      "Central vein → Sinusoids → Portal triad",
+      "Space of Disse → Sinusoids → Bile canaliculi"
+    ],
+    "answer": "Bile canaliculi → Canals of Hering → Bile ductules",
+    "explanation": "Bile is secreted into canaliculi, moves to the transitional canals of Hering, and then enters the ductules in the portal tract."
+  },
+  {
+    "q": "A patient with chronic portal hypertension shows an accumulation of inflammatory cells and fibrosis within the 'Portal Triad'. Which three structures are found here?",
+    "options": [
+      "Central vein, hepatic artery, bile duct",
+      "Portal vein, hepatic artery, bile duct",
+      "Portal vein, central vein, hepatic artery",
+      "Bile duct, Kupffer cell, sinusoid"
+    ],
+    "answer": "Portal vein, hepatic artery, bile duct",
+    "explanation": "The portal triad consists of a branch of the portal vein, a branch of the hepatic artery, and a bile duct."
+  },
+  {
+    "q": "What is the primary immunological role of Kupffer cells in the liver?",
+    "options": [
+      "Producing IgA for the bile",
+      "Storing Vitamin A for immune regulation",
+      "Phagocytosis of pathogens and damaged red blood cells",
+      "Secreting insulin-like growth factor"
+    ],
+    "answer": "Phagocytosis of pathogens and damaged red blood cells",
+    "explanation": "Kupffer cells are specialized macrophages that clear pathogens from portal blood and remove aged erythrocytes."
+  },
+  {
+    "q": "The muscularis externa of the gallbladder is described as 'disorganized' to facilitate which specific function?",
+    "options": [
+      "Rhythmic peristalsis to move food",
+      "Powerful, synchronous contraction for bile ejection",
+      "Slow mixing of bile with digestive enzymes",
+      "Absorption of electrolytes through the muscle layer"
+    ],
+    "answer": "Powerful, synchronous contraction for bile ejection",
+    "explanation": "The interwoven, disorganized muscle fibers allow the gallbladder to contract forcefully as a unit rather than producing peristaltic waves."
+  }
+];
+// replace questions////////////
+
+/* STATE */
+let index = 0;
+let score = 0;
+let answered = Array(questions.length).fill(null);
+
+/* AUTO TIME = #questions × 1.5 minutes */
+let timeLeft = questions.length * 90;
+
+function startTimer() {
+    const timerEl = document.getElementById("timer");
+    const x = setInterval(() => {
+        let m = Math.floor(timeLeft / 60);
+        let s = timeLeft % 60;
+        timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+            clearInterval(x);
+            finishQuiz(true);
+        }
+    }, 1000);
+}
+
+startTimer();
+
+/* DISPLAY QUESTION */
+function loadQuestion() {
+    const q = questions[index];
+    document.getElementById("question-text").textContent = `Q${index+1}. ${q.q}`;
+    const optBox = document.getElementById("options");
+    const exp = document.getElementById("explanation");
+
+    optBox.innerHTML = "";
+    exp.textContent = "";
+
+    q.options.forEach((opt)=>{
+        let btn = document.createElement("button");
+        btn.textContent = opt;
+
+        if (answered[index] !== null) {
+            btn.disabled = true;
+            if (opt === q.answer) btn.classList.add("correct");
+            if (opt === answered[index] && opt !== q.answer) btn.classList.add("wrong");
+        } else {
+            btn.onclick = ()=> selectOption(opt);
+        }
+
+        optBox.appendChild(btn);
+    });
+
+    if (answered[index] !== null) {
+        exp.innerHTML = `<b>Explanation:</b> ${q.explanation}`;
+        document.getElementById("next").disabled = false;
+    } else {
+        document.getElementById("next").disabled = true;
+    }
+
+    document.getElementById("prev").disabled = index === 0;
+}
+
+/* SELECT */
+function selectOption(opt) {
+    const q = questions[index];
+    if (answered[index] !== null) return;
+    answered[index] = opt;
+    if (opt === q.answer) score++;
+    loadQuestion();
+}
+
+/* NAV */
+document.getElementById("prev").onclick = ()=>{
+    if (index > 0) { index--; loadQuestion(); }
+};
+document.getElementById("next").onclick = ()=>{
+    if (index < questions.length - 1) { index++; loadQuestion(); }
+    else finishQuiz(false);
+};
+document.getElementById("finish").onclick = ()=> finishQuiz(false);
+
+/* FINISH */
+function finishQuiz(auto=false) {
+    document.getElementById("quiz-box").style.display = "none";
+    document.querySelector(".nav-btns").style.display = "none";
+
+    document.getElementById("results-box").style.display = "block";
+    document.getElementById("score").textContent = `Your Score: ${score} / ${questions.length}`;
+
+    let used = (questions.length*90 - timeLeft);
+    if (used < 0) used = questions.length*90;
+    let m = Math.floor(used/60);
+    let s = used%60;
+
+    document.getElementById("time-used").textContent =
+        `Time Used: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${auto ? "(Time Over)" : ""}`;
+}
+
+/* START */
+loadQuestion();
+</script>
+
+</body>
+</html>
